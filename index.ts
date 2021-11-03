@@ -48,6 +48,7 @@ class Chain {
         return this.chain[this.chain.length - 1];
     };
 
+    // Proof of work system
     mine(nonce: number) {
         let solution = 1;
         console.log('mining ...');
@@ -67,6 +68,7 @@ class Chain {
         }
     }
 
+    // Add a new block to the chain if valid signature & proof of work is complete
     addBlock(transaction: Transaction, senderPublicKey: string, signature: Buffer) {
         const verifier = crypto.createVerify('SHA256');
 
@@ -80,6 +82,8 @@ class Chain {
     };
 }
 
+
+// Wallet gives a user a public/private keypair
 class Wallet {
     public publicKey: string;   // for receiving money
     public privateKey: string; // for spending money
@@ -106,4 +110,14 @@ class Wallet {
         Chain.instance.addBlock(transaction, this.publicKey, signature);
 
     }
-}
+};
+
+const satoshi = new Wallet();
+const bob = new Wallet();
+const alice = new Wallet();
+
+satoshi.sendMoney(50, bob.publicKey);
+bob.sendMoney(23, alice.publicKey);
+alice.sendMoney(5, bob.publicKey);
+
+console.log(Chain.instance)
