@@ -51,17 +51,19 @@ class Block {
 // The blockchain
 class Chain {
     constructor() {
-        this.chain = [new Block('', new Transaction(100, 'genesis', 'satoshi'))];
+        this.chain = [
+            // Genesis block
+            new Block('', new Transaction(100, 'genesis', 'satoshi'))
+        ];
     }
-    ;
+    // Most recent block
     get lastBlock() {
         return this.chain[this.chain.length - 1];
     }
-    ;
     // Proof of work system
     mine(nonce) {
         let solution = 1;
-        console.log('mining ...');
+        console.log('⛏️  mining...');
         while (true) {
             const hash = crypto.createHash('MD5');
             hash.update((nonce + solution).toString()).end();
@@ -75,16 +77,17 @@ class Chain {
     }
     // Add a new block to the chain if valid signature & proof of work is complete
     addBlock(transaction, senderPublicKey, signature) {
-        const verifier = crypto.createVerify('SHA256');
-        const isValid = verifier.verify(senderPublicKey, signature);
+        const verify = crypto.createVerify('SHA256');
+        verify.update(transaction.toString());
+        const isValid = verify.verify(senderPublicKey, signature);
         if (isValid) {
             const newBlock = new Block(this.lastBlock.hash, transaction);
             this.mine(newBlock.nonce);
             this.chain.push(newBlock);
         }
     }
-    ;
 }
+// Singleton instance
 Chain.instance = new Chain();
 // Wallet gives a user a public/private keypair
 class Wallet {
@@ -92,7 +95,7 @@ class Wallet {
         const keypair = crypto.generateKeyPairSync('rsa', {
             modulusLength: 2048,
             publicKeyEncoding: { type: 'spki', format: 'pem' },
-            privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
+            privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
         });
         this.privateKey = keypair.privateKey;
         this.publicKey = keypair.publicKey;
@@ -105,7 +108,7 @@ class Wallet {
         Chain.instance.addBlock(transaction, this.publicKey, signature);
     }
 }
-;
+// Example usage
 const satoshi = new Wallet();
 const bob = new Wallet();
 const alice = new Wallet();
