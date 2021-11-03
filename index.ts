@@ -1,5 +1,7 @@
 import * as crypto from 'crypto';
 
+
+// Transfer of funds between two wallets
 class Transaction {
     constructor(
         public amount: number,
@@ -12,8 +14,9 @@ class Transaction {
     }
 }
 
-class Block {
 
+// Individual block on the chain
+class Block {
     public nonce = Math.round(Math.random() * 999999999);
 
     constructor(
@@ -30,13 +33,15 @@ class Block {
     }
 }
 
+
+// The blockchain
 class Chain {
     public static instance = new Chain();
 
     chain: Block[];
 
     constructor() {
-        this.chain = [new Block(null, new Transaction(100, 'genesis', 'satoshi'))];
+        this.chain = [new Block('', new Transaction(100, 'genesis', 'satoshi'))];
     };
 
     get lastBlock() {

@@ -20,6 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
+// Transfer of funds between two wallets
 class Transaction {
     constructor(amount, payer, // public key
     payee // public key
@@ -32,6 +33,7 @@ class Transaction {
         return JSON.stringify(this);
     }
 }
+// Individual block on the chain
 class Block {
     constructor(prevHash, transaction, ts = Date.now()) {
         this.prevHash = prevHash;
@@ -46,9 +48,10 @@ class Block {
         return hash.digest('hex');
     }
 }
+// The blockchain
 class Chain {
     constructor() {
-        this.chain = [new Block(null, new Transaction(100, 'genesis', 'satoshi'))];
+        this.chain = [new Block('', new Transaction(100, 'genesis', 'satoshi'))];
     }
     ;
     get lastBlock() {
